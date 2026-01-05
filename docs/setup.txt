@@ -1,0 +1,11 @@
+#for creating static folders 
+mkdir -p static && touch static/{css,js,img}/.gitkeep
+
+
+#for creating requirements.txt
+mkdir -p requirements && touch requirements/{base,local,production}.txt
+
+#for creating multiple django settings
+mkdir -p settings && touch settings/{__init__,base,local,production}.py
+
+
