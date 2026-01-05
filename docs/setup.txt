@@ -9,3 +9,5 @@ mkdir -p requirements && touch requirements/{base,local,production}.txt
 mkdir -p settings && touch settings/{__init__,base,local,production}.py
 
 
+#Generate secret key
+python -c "import secrets; print(secrets.token_urlsafe(100))"

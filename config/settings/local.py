@@ -8,6 +8,8 @@ from .base import BASE_DIR  # noqa
 local_env_file = path.join(BASE_DIR, ".env", "env.local")
 
 # "django-insecure-jdt%41^unr(pwg#5+$vk5zk2yats3-8b^aetl%2k!$&-p7#z1s"
+#new key 100 in number
+# aP6k5TjzbNmjJNIzxI9jJAVhoGB0qVZV0AxqKNvcEIIlTFalZ4Qo_4cbNqwH2kSg8rhHeMBqxge10N7bIDdgYBerGnqPrYtaVg30g-DPgbLb25c_OQyn8gqNDjUZsnh7ze1mvQ
 
 
 if path.isfile(local_env_file):
