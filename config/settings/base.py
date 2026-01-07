@@ -48,7 +48,11 @@ THIRD_PARTY_APPS = [
     "djcelery_email",
     "django_celery_beat",
 ]
-LOCAL_APPS = []
+LOCAL_APPS = [
+    "core_apps.common.apps.CommonConfig",
+    "core_apps.user_auth.apps.UserAuthConfig",
+    "core_apps.user_profile.apps.UserProfileConfig",
+]
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 
