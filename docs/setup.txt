@@ -11,3 +11,15 @@ mkdir -p settings && touch settings/{__init__,base,local,production}.py
 
 #Generate secret key
 python -c "import secrets; print(secrets.token_urlsafe(100))"
+
+#make .env files folder and example env file
+mkdir -p .envs && touch .envs/.env.local && touch .envs/.env.example
+
+#Upgrade pip and setuptools
+pip install --upgrade pip setuptools 
+#create project apps
+mkdir -p core_apps && touch core_apps/__init__.py
+
+./manage.py startapp user_auth 
+./manage.py startapp common
+./manage.py startapp user_profile
