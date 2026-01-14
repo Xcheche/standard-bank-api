@@ -1,4 +1,5 @@
 # Production ready Django Banking API
+![License: MIT](https://img.shields.io/github/license/xcheche/standard-bank-api)
 
 A production-ready **Django Banking API** designed to power secure FinTech applications.  
 This project provides authentication, account management, transaction handling, **bank account verification**, and **virtual card issuance** with PostgreSQL as the backend.
@@ -20,7 +21,6 @@ This project provides authentication, account management, transaction handling, 
 ## 📸 Demo
 ![Demo Screenshot](https://via.placeholder.com/1000x500.png?text=Django+Banking+API+Demo)
 
-*(Replace the above link with an actual screenshot of your running API or Swagger docs.)*
 
 ---
 
