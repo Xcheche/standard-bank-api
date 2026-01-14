@@ -1,0 +1,1 @@
+mkdir -p docker/local/django && touch docker/local/django/Dockerfile  

@@ -1,0 +1,18 @@
+# Create a custom network for the banker app
+docker network create banker_local_nw
+#or docker network ls
+
+#To check the docker config
+docker compose -f local.yml config
+
+#To check logs of services in the docker compose file
+docker compose -f local.yml logs -f
+#or docker compose -f local.yml logs -f <service_name>
+e.g docker compose -f local.yml logs -f api
+
+
+#To check for volumes 
+docker volume inspect api_banker_local_db
+
+#To check if all services are running on same network
+docker network inspect banker_local_nw 

@@ -1,0 +1,3 @@
+#Loguru is a third-party logging library for Python that aims to simplify logging by providing an easy-to-use and flexible interface. It offers features such as sink management, structured logging, and better formatting options compared to the built-in logging module.
+#To use Loguru in a Django project, you typically need to install the library and configure it in your settings or a dedicated logging module. Below is an example of how to set up Loguru for logging in a Django application.
+pip install loguru
