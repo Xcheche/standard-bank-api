@@ -14,13 +14,12 @@ This project provides authentication, account management, transaction handling, 
 - 📊 **Account Management** — Create, update, and monitor user accounts
 - 🗄️ **PostgreSQL Integration** — Reliable relational database with connection health checks
 - 🐳 **Dockerized Setup** — Ready for local development and production deployment
-- ☁️ **Cloud-Ready Architecture** — Scalable design for Digital ocean
+- ☁️ **Cloud-Ready Architecture** — Scalable design for DigitalOcean
 
 ---
 
 ## 📸 Demo
 ![Demo Screenshot](https://via.placeholder.com/1000x500.png?text=Django+Banking+API+Demo)
-
 
 ---
 
@@ -39,7 +38,3 @@ cd standard-bank-api
 
 # Build and run with Docker
 docker-compose up --build
-
-## License
-
-This project is licensed under the MIT License. See the [MIT License](LICENSE) file for details.
