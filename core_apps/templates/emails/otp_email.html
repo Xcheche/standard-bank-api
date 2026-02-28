@@ -1,0 +1,12 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Your Login OTP{% endblock title %}
+
+{% block content %}
+<h2>Your One-Time Password (OTP)</h2>
+<p>This OTP will expire in <strong>{{ expiry_time }} minutes.</strong></p>
+<p>If you didn't request this OTP during login, please ignore this email and contact our support team immediately.</p>
+<p>Best regards,<br>
+    <strong>{{ site_name }} Team</strong>
+</p>
+
+{% endblock content %}    

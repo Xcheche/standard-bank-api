@@ -105,3 +105,24 @@ DOMAIN = getenv("DOMAIN", "localhost:8000")
 # ========================================#
 
 MAX_UPLOAD_SIZE = 1 * 1024 * 1024  # 1 MB
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080"]
+
+
+# ========================================#
+# Logout Duration after multiple failed login attempts
+# ========================================#
+LOGOUT_DURATION =timedelta(minutes=1)  # 1 hour in seconds
+
+
+# ========================================#
+# Login Attempts Configuration
+# ========================================#
+LOGIN_ATTEMPTS = 3
+# ========================================#
+# OTP Expiration Time Configuration
+OTP_EXPIRATION_TIME = timedelta(minutes=1)  # 5 minutes in seconds
+
+

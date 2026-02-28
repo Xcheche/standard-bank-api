@@ -1,0 +1,34 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Account Locked - Security Alert{% endblock title %}
+
+{% block content %}
+    <h2>🔒 Account Temporarily Locked</h2>
+
+    <p>Dear {{ user.full_name }},</p>
+
+    <p>Your account has been temporarily locked due to multiple failed login attempts detected on your account.</p>
+
+    <p><strong>Lock Duration:</strong> {{ lock_duration }} minutes</p>
+    <p><strong>Action Required:</strong> Please wait before attempting to log in again</p>
+
+    <h3>⚠️ Security Notice</h3>
+    <p>If you did not attempt to log in to your account, this may indicate that someone is trying to access your account without authorization.</p>
+
+    <p><strong>Please take the following actions immediately:</strong></p>
+    <ul>
+        <li>Change your password once the lock period expires</li>
+        <li>Review your recent account activity</li>
+        <li>Enable two-factor authentication if not already enabled</li>
+        <li>Contact our support team if you suspect unauthorized access</li>
+    </ul>
+
+    <p><strong>Need Help?</strong></p>
+    <p>If you need immediate assistance, please contact our security team.</p>
+
+    <p>Best regards,<br>
+        <strong>{{ site_name }} Security Team</strong>
+    </p>
+
+    <hr>
+    <p><small>This is an automated security notification. Please do not reply to this email.</small></p>
+{% endblock content %}    

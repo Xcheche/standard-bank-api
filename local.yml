@@ -47,7 +47,6 @@ services:
 
 networks:
   banker_local_nw:
-    external: true
 
 volumes:
   banker_local_db:
