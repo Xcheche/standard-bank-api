@@ -65,3 +65,57 @@ class User(AbstractUser):
             self.save()
             return True
         return False    
+    
+    # Protection against brute-force attacks: Locks account after a certain number of failed attemps
+    def handle_failed_login_attempt(self):
+
+        self.failed_login_attemps += 1
+        self.last_failed_login = timezone.now()
+        if self.failed_login_attemps >= settings.LOGIN_ATTEMPT:
+            self.account_status = AccountStatus.LOCKED
+            send_account_locked_email(self.email)
+        self.save()
+
+    # Reset failed login attempts after a successful login   
+    def reset_failed_login_attempts(self) -> None:
+        self.failed_login_attemps = 0
+        self.last_failed_login = None
+        self.account_status = AccountStatus.ACTIVE
+        self.save()
+
+    # Unlocks the account after a certain duration
+    def unlock_account(self) -> None:
+        if self.account_status == AccountStatus.LOCKED:
+            self.account_status = AccountStatus.ACTIVE
+            self.failed_login_attemps = 0
+            self.last_failed_login = None
+            self.save()
+
+    # Property to check if the account is locked
+    @property  
+    def is_account_locked(self) -> bool:      
+        if self.account_status == AccountStatus.LOCKED:
+            if self.last_failed_login and timezone.now() - self.last_failed_login >= settings.LOGOUT_DURATION:
+                self.unlock_account()
+                return False
+            return True
+        return False
+    
+    # Property to get the full name of the user
+    @property
+    def full_name(self) -> str:
+        full_name  = f"{self.first_name} {self.last_name}".strip()
+        return " ".join(full_name.split())  # Remove extra spaces if middle name is empty
+    
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
+        ordering = ["-date_joined"]
+
+    # Custom method to check if the user has a specific role
+    def has_role(self, role_name: str) -> bool:
+        return hasattr(self, "role") and self.role == role_name
+    
+    def __str__(self) -> str:
+        return f"{self.full_name} -{self.get_role_display()} ({self.email})"

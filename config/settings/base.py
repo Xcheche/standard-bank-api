@@ -4,9 +4,11 @@
 # from os import getenv, path
 from pathlib import Path
 from os import getenv
-from dotenv import load_dotenv 
+from dotenv import load_dotenv
 from loguru import logger
 from datetime import timedelta
+import os
+from loguru import logger
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
@@ -86,7 +88,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
-
+AUTH_USER_MODEL = "user_auth.User"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -166,34 +168,82 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 #========================================#
 # Logging Configuration #
 #========================================#
-LOGGING_CONFIG =None  # Disable the default logging configuration
 
-LOGURU_LOGGING = {
-    "handlers": [
+
+LOGGING_CONFIG = None  # Disable the default logging configuration
+
+# Ensure the logs directory exists and is writable before loguru tries to
+# open its file sinks. If we cannot create/write to the directory (e.g. the
+# container user lacks permission), we fall back to a stderr-only sink so a
+# logging misconfiguration can never prevent Django from booting.
+LOGS_DIR = BASE_DIR / "logs"
+_file_sinks_enabled = True
+try:
+    LOGS_DIR.mkdir(parents=True, exist_ok=True)
+    # Probe writability with a throwaway open() so a read-only bind mount
+    # surfaces here rather than inside loguru's FileSink.
+    probe_path = LOGS_DIR / ".loguru_write_probe"
+    with open(probe_path, "a", encoding="utf-8"):
+        pass
+    probe_path.unlink(missing_ok=True)
+except OSError:
+    _file_sinks_enabled = False
+
+_handlers = []
+
+if _file_sinks_enabled:
+    _handlers.extend(
+        [
+            {
+                "sink": str(LOGS_DIR / "debug.log"),
+                "level": "DEBUG",
+                "filter": lambda record: record["level"].no <= logger.level("WARNING").no,
+                "format": "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - "
+                "{message}",
+                "rotation": "10MB",
+                "retention": "30 days",
+                "compression": "zip",
+            },
+            {
+                "sink": str(LOGS_DIR / "error.log"),
+                "level": "ERROR",
+                "format": "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - "
+                "{message}",
+                "rotation": "10MB",
+                "retention": "30 days",
+                "compression": "zip",
+                "backtrace": True,
+                "diagnose": True,
+            },
+        ]
+    )
+else:
+    # Last-resort fallback: log to stderr so we still get output when the
+    # file sinks can't be created (e.g. PermissionError in the container).
+    _handlers.append(
         {
-            "sink": BASE_DIR / "logs/debug.log",
+            "sink": os.sys.stderr,
             "level": "DEBUG",
-            "filter": lambda record: record["level"].no <= logger.level("WARNING").no,
             "format": "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - "
             "{message}",
-            "rotation": "10MB",
-            "retention": "30 days",
-            "compression": "zip",
-        },
-        {
-            "sink": BASE_DIR / "logs/error.log",
-            "level": "ERROR",
-            "format": "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - "
-            "{message}",
-            "rotation": "10MB",
-            "retention": "30 days",
-            "compression": "zip",
-            "backtrace": True,
-            "diagnose": True,
-        },
-    ],
-}
-logger.configure(**LOGURU_LOGGING)
+        }
+    )
+
+LOGURU_LOGGING = {"handlers": _handlers}
+
+# Guard the configure call: a logging misconfiguration must never prevent
+# Django from booting.
+try:
+    logger.configure(**LOGURU_LOGGING)
+except Exception as _loguru_config_error:  # pragma: no cover - defensive
+    import sys
+
+    sys.stderr.write(f"[logging] loguru.configure() failed: {_loguru_config_error!r}\n")
+    try:
+        logger.remove()
+        logger.add(os.sys.stderr, level="DEBUG")
+    except Exception:
+        pass
 
 LOGGING = {
     "version": 1,

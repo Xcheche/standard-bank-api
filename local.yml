@@ -6,8 +6,13 @@ services:
     volumes:
       - .:/app:z
       - ./staticfiles:/app/staticfiles
-    expose:
-      - "8000"
+      - ./logs:/app/logs
+    # expose:
+    #   - "8000"
+    ports:
+      - "8000:8000"
+    # This sets the user and group ID for the container to match the host system's user and group IDs, which helps avoid permission issues when accessing files created by the container.  
+    user: "${UID}:${GID}"  
     env_file:
       - ./.envs/.env.local
     depends_on:
@@ -22,7 +27,7 @@ services:
       context: .
       dockerfile: ./docker/local/postgres/Dockerfile
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - banker_local_db:/var/lib/postgresql/data
     env_file:
@@ -33,7 +38,7 @@ services:
   mailpit:
     image: docker.io/axllent/mailpit:v1.20.3
     ports:
-      - "8025:8025"
+      - "8027:8025"
       - "1025:1025"
     volumes:
       - banker_mailpit_db:/data

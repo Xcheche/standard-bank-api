@@ -48,6 +48,18 @@ banker-config:
 makemigrations:
 	echo "📦Creating Django migrations..."
 	docker compose -f local.yml run --rm ${WEB_SERVICE} python manage.py makemigrations
+
+# Check what to migrate
+check-migrate:
+	echo "🔍Checking for pending migrations..."
+	docker compose -f local.yml run --rm ${WEB_SERVICE} python manage.py showmigrations --plan
+
+
+# Check  errors in Django Migrations
+check-migrations:
+	echo "🔍Checking for pending migrations..."
+	docker compose -f local.yml run --rm ${WEB_SERVICE} python manage.py makemigrations --check --dry-run
+
 # Apply Django Migrations
 migrate:
 	echo "🚀Applying Django migrations..."

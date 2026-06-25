@@ -1,4 +1,6 @@
 from django.db import models #noqa
+from django.utils.translation import gettext_lazy as _
+
 
 class SecurityQuestions(models.TextChoices):
     MOTHERS_MAIDEN_NAME = 'MOTHERS_MAIDEN_NAME', _('What is your mother\'s maiden name?')
