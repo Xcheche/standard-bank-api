@@ -27,8 +27,10 @@ build:
 up:
 	echo "🚀Starting containers in detached mode..."
 	docker compose -f local.yml up -d
-# Bring Down Containers
-
+# Restart Containers
+restart:
+	echo "🔄Restarting containers..."
+	docker compose -f local.yml restart
 # Bring Up Containers without detached mode
 upp:
 	echo "🚀Starting containers without detached mode..."

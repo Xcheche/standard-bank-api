@@ -1,5 +1,5 @@
-
 from os import getenv
+from datetime import timedelta
 from .base import *  # noqa
 
 
@@ -40,7 +40,9 @@ CELERY_EMAIL_BACKEND = getenv(
 
 EMAIL_HOST = getenv("EMAIL_HOST", "localhost")
 EMAIL_PORT = int(getenv("EMAIL_PORT", 25))
-DEFAULT_FROM_EMAIL = getenv("DEFAULT_FROM_EMAIL", "xcheche_bank <noreply@xcheche_bank.com>")
+DEFAULT_FROM_EMAIL = getenv(
+    "DEFAULT_FROM_EMAIL", "xcheche_bank <noreply@xcheche_bank.com>"
+)
 
 
 # ========================================#
@@ -60,21 +62,19 @@ MAX_UPLOAD_SIZE = 1 * 1024 * 1024  # 1 MB
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
     "http://localhost:8000",
-    ]
+]
 
 
 # ========================================#
 # Logout Duration after multiple failed login attempts
 # ========================================#
-LOGOUT_DURATION =timedelta(minutes=1)  # 1 hour in seconds
+LOGOUT_DURATION = timedelta(minutes=1)  # 1 hour in seconds
 
 
 # ========================================#
 # Login Attempts Configuration
 # ========================================#
-LOGIN_ATTEMPTS = 3
+LOGIN_ATTEMPT = 3
 # ========================================#
 # OTP Expiration Time Configuration
-OTP_EXPIRATION_TIME = timedelta(minutes=1)  # 5 minutes in seconds
-
-
+OTP_EXPIRATION_TIME = timedelta(minutes=5)  # 5 minutes

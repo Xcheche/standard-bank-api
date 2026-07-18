@@ -5,6 +5,12 @@ from django.utils.translation import gettext_lazy as _
 from .models import User
 from .forms import UserCreationForm, UserChangeForm
 
+
+# ====================================================
+# Custom User Admin
+# ====================================================
+
+
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
     add_form = UserCreationForm

@@ -7,10 +7,10 @@ services:
       - .:/app:z
       - ./staticfiles:/app/staticfiles
       - ./logs:/app/logs
-    # expose:
-    #   - "8000"
-    ports:
-      - "8000:8000"
+    expose:
+      - "8080"
+    # ports:
+    #   - "8000:8000"
     # This sets the user and group ID for the container to match the host system's user and group IDs, which helps avoid permission issues when accessing files created by the container.  
     user: "${UID}:${GID}"  
     env_file:
@@ -49,6 +49,21 @@ services:
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
     networks:
       - banker_local_nw
+  
+  nginx:
+    build:
+      context: ./docker/local/nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    volumes:
+      - ./staticfiles:/app/staticfiles:ro
+      - ./logs_store:/var/log/nginx
+    networks:
+      - banker_local_nw
 
 networks:
   banker_local_nw:
@@ -56,3 +71,4 @@ networks:
 volumes:
   banker_local_db:
   banker_mailpit_db:
+  logs_store:

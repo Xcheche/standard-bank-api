@@ -1,4 +1,3 @@
-
 # from pathlib import Path
 # from dotenv import load_dotenv
 # from os import getenv, path
@@ -9,10 +8,13 @@ from loguru import logger
 from datetime import timedelta
 import os
 from loguru import logger
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 
-APPS_DIR =BASE_DIR / "core_apps"
+# Load environment variables from .env file
+APPS_DIR = BASE_DIR / "core_apps"
+TEMPLATES_DIR = BASE_DIR / "templates"
 # local_env_file = path.join(BASE_DIR, ".env","env.local")
 
 # if path.isfile(local_env_file):
@@ -21,10 +23,16 @@ APPS_DIR =BASE_DIR / "core_apps"
 load_dotenv(BASE_DIR / ".env" / "env.local")
 
 
+# ========================================#
+#    Admin Branding
+# =========================================#
+ADMIN_SITE_HEADER = "Standard Bank"
+ADMIN_SITE_TITLE = "Standard Bank"
+ADMIN_INDEX_TITLE = "Welcome to Standard Bank"
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
 
 
 # Application definition
@@ -67,6 +75,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "core_apps.user_auth.middleware.CustomHeaderMiddleware",  # Custom middleware to add headers
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -74,7 +83,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [str(APPS_DIR / "templates")],
+        "DIRS": [str(TEMPLATES_DIR), str(APPS_DIR / "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -88,6 +97,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "config.wsgi.application"
+# Custom User Model
 AUTH_USER_MODEL = "user_auth.User"
 
 # Database
@@ -104,15 +114,13 @@ DATABASES = {
     }
 }
 
-#================================================#
-#Password Hashers#
-#================================================#
+# ================================================#
+# Password Hashers#
+# ================================================#
+
 PASSWORD_HASHERS = [
-    "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
-    "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
-    "django.contrib.auth.hashers.SCryptPasswordHasher",
 ]
 
 # Password validation
@@ -139,24 +147,24 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Africa/Lagos"
 
 USE_I18N = True
 
 USE_TZ = True
 
 
-
 SITE_ID = 1
-
-
-
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [
+    str(BASE_DIR / "static"),
+    str(APPS_DIR / "static"),
+]
 STATIC_ROOT = str(BASE_DIR / "staticfiles")
 
 # Default primary key field type
@@ -165,9 +173,9 @@ STATIC_ROOT = str(BASE_DIR / "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-#========================================#
+# ========================================#
 # Logging Configuration #
-#========================================#
+# ========================================#
 
 
 LOGGING_CONFIG = None  # Disable the default logging configuration
@@ -197,7 +205,8 @@ if _file_sinks_enabled:
             {
                 "sink": str(LOGS_DIR / "debug.log"),
                 "level": "DEBUG",
-                "filter": lambda record: record["level"].no <= logger.level("WARNING").no,
+                "filter": lambda record: record["level"].no
+                <= logger.level("WARNING").no,
                 "format": "{time:YYYY-MM-DD HH:mm:ss.SSS} | {level: <8} | {name}:{function}:{line} - "
                 "{message}",
                 "rotation": "10MB",
@@ -250,4 +259,21 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {"loguru": {"class": "interceptor.InterceptHandler"}},
     "root": {"handlers": ["loguru"], "level": "DEBUG"},
+}
+# ========================================#
+# Django REST Framework #
+# ========================================#
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+# ========================================#
+# Spectacular Settings #
+# ========================================#
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Standard Bank API",
+    "DESCRIPTION": "Standard Bank API Documentation",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "LICENSE": {"name": "MIT License", "url": "https://opensource.org/licenses/MIT"},
 }
